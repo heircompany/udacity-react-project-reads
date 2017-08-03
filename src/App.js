@@ -20,13 +20,19 @@ class App extends Component {
 
   updateShelf = (book, shelf) => {
     book.shelf = shelf;
-    this.setState(state => ({
-      books: state.books.filter(book => book).map(book => book)
-    }));
 
-    BooksAPI.update(book.id, shelf).then(
-      console.log('Called updateShelf: ', book.title, shelf)
-    );
+    BooksAPI.update(book, shelf).then(res => {
+      this.setState(state => ({
+        books: state.books.filter(b => b.id !== book.id).concat([book])
+      }));
+      console.log('Called updateShelf: ', book.title, shelf);
+    });
+  };
+
+  updateQuery = query => {
+    BooksAPI.search(query).then(books => {
+      this.setState({ books });
+    });
   };
 
   render() {
@@ -35,7 +41,7 @@ class App extends Component {
         <Route
           exact
           path="/"
-          render={() =>
+          render={({ history }) =>
             <BookShelf
               onUpdateShelf={this.updateShelf}
               books={this.state.books}
@@ -43,10 +49,12 @@ class App extends Component {
         />
         <Route
           path="/search"
-          render={() =>
+          render={({ history }) =>
             <SearchBooks
               onUpdateShelf={this.updateShelf}
               books={this.state.books}
+              query={this.state.query}
+              onUpdateQuery={this.updateQuery}
             />}
         />
       </div>

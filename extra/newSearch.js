@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import escapeRegExp from 'escape-string-regexp';
-// import sortBy from 'sort-by';
 
-// import * as BooksAPI from './BooksAPI';
+import * as BooksAPI from './BooksAPI';
 
 class SearchBooks extends Component {
   static propTypes = {
@@ -13,11 +11,15 @@ class SearchBooks extends Component {
   };
 
   state = {
-    query: ''
+    query: '',
+    results: []
   };
 
-  onUpdateQuery = query => {
+  updateQuery = query => {
     this.setState({ query: query.trim() });
+    BooksAPI.search(query).then(books => {
+      this.setState({ results: books });
+    });
   };
 
   clearQuery = () => {
@@ -25,21 +27,8 @@ class SearchBooks extends Component {
   };
 
   render() {
-    const { books, onUpdateShelf, onUpdateQuery } = this.props;
-    const { query } = this.state;
-
-    let showingBooks;
-    if (query) {
-      // create a regular expression and escape special characters in query
-      // this creates a string literal instead of a special RegeExp characters
-      // i === ignore case (upper/lower)
-      const match = new RegExp(escapeRegExp(query), 'i');
-      showingBooks = books.filter(book =>
-        match.test(book.title || book.authors)
-      );
-    } else {
-      showingBooks = books;
-    }
+    const { books, onUpdateShelf } = this.props;
+    const { query, results } = this.state;
 
     return (
       <div className="search-books">
@@ -52,7 +41,7 @@ class SearchBooks extends Component {
               type="text"
               placeholder="Search by title or author"
               value={query}
-              onChange={event => onUpdateQuery(event.target.value)}
+              onChange={event => this.updateQuery(event.target.value)}
             />
           </div>
         </div>
@@ -60,13 +49,13 @@ class SearchBooks extends Component {
         <div>
           <div className="search-books-results">
             <span>
-              Now showing {showingBooks.length} of {books.length} total
+              Now showing {results.length} of {books.length} total
             </span>
             <button onClick={this.clearQuery}>Show all</button>
           </div>
 
           <ol className="books-grid">
-            {showingBooks.map(book =>
+            {results.map(book =>
               <li key={book.id}>
                 <div className="book">
                   <div className="book-top">
