@@ -7,14 +7,10 @@ import * as BooksAPI from './BooksAPI';
 import './App.css';
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      books: [],
-      query: ''
-    };
-  }
+  state = {
+    books: [],
+    query: ''
+  };
 
   componentDidMount() {
     BooksAPI.getAll().then(books => {
@@ -23,10 +19,10 @@ class App extends Component {
     });
   }
 
-  updateShelf = async (book, shelf) => {
+  updateShelf = (book, shelf) => {
     book.shelf = shelf;
 
-    await BooksAPI.update(book, shelf).then(res => {
+    BooksAPI.update(book, shelf).then(res => {
       this.setState(state => ({
         books: state.books.filter(b => b.id !== book.id).concat([book])
       }));
@@ -35,11 +31,15 @@ class App extends Component {
   };
 
   updateQuery = async query => {
-    this.setState({ query: query.trim() });
+    this.setState({ query });
 
     await BooksAPI.search(query, 100).then(books => {
       this.setState({ books });
     });
+  };
+
+  clearQuery = () => {
+    this.setState({ query: '' });
   };
 
   render() {
@@ -58,13 +58,10 @@ class App extends Component {
           path="/search"
           render={({ history }) =>
             <SearchBooks
-              onUpdateShelf={(book, shelf) => {
-                this.updateShelf(book, shelf);
-                history.push('/');
-              }}
-              books={this.state.books}
-              query={this.state.query}
+              onUpdateShelf={this.updateShelf}
               onUpdateQuery={this.updateQuery}
+              query={this.state.query}
+              books={this.state.books}
             />}
         />
       </div>

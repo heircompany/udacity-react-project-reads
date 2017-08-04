@@ -2,19 +2,27 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import escapeRegExp from 'escape-string-regexp';
+import sortBy from 'sort-by';
+
+// import * as BooksAPI from './BooksAPI';
 
 class SearchBooks extends Component {
   static propTypes = {
+    books: PropTypes.array.isRequired,
+    query: PropTypes.string.isRequired,
     onUpdateShelf: PropTypes.func.isRequired,
+    onClearQuery: PropTypes.func.isRequired,
     onUpdateQuery: PropTypes.func.isRequired
   };
 
-  clearQuery = () => {
-    this.setState({ query: '' });
-  };
-
   render() {
-    const { query, books, onUpdateShelf, onUpdateQuery } = this.props;
+    const {
+      books,
+      query,
+      onUpdateShelf,
+      onUpdateQuery,
+      onClearQuery
+    } = this.props;
 
     let showingBooks;
     if (query) {
@@ -28,6 +36,7 @@ class SearchBooks extends Component {
     } else {
       showingBooks = books;
     }
+    showingBooks.sort(sortBy('title', 'authors'));
 
     return (
       <div className="search-books">
@@ -50,7 +59,7 @@ class SearchBooks extends Component {
             <span>
               Now showing {showingBooks.length} of {books.length} total
             </span>
-            <button onClick={this.clearQuery}>Show all</button>
+            <button onClick={() => onClearQuery(query)}>Show all</button>
           </div>
 
           <ol className="books-grid">
