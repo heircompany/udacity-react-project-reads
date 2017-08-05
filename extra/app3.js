@@ -11,7 +11,8 @@ class App extends Component {
     super(props);
 
     this.state = {
-      books: []
+      books: [],
+      query: ''
     };
   }
 
@@ -30,6 +31,14 @@ class App extends Component {
         books: state.books.filter(b => b.id !== book.id).concat([book])
       }));
       console.log('Called updateShelf: ', book.title, shelf);
+    });
+  };
+
+  updateQuery = async query => {
+    this.setState({ query: query.trim() });
+
+    await BooksAPI.search(query, 100).then(books => {
+      this.setState({ books });
     });
   };
 
@@ -54,6 +63,8 @@ class App extends Component {
                 history.push('/');
               }}
               books={this.state.books}
+              query={this.state.query}
+              onUpdateQuery={this.updateQuery}
             />}
         />
       </div>
