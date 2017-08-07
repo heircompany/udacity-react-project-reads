@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import BookShelf from './BookShelf';
+// import BookShelf from './BookShelf2';
 import SearchBooks from './SearchBooks';
 
 import * as BooksAPI from './BooksAPI';
@@ -41,7 +42,9 @@ class App extends Component {
           path="/"
           render={({ history }) =>
             <BookShelf
-              onUpdateShelf={this.updateShelf}
+              onUpdateShelf={(book, shelf) => {
+                this.updateShelf(book, shelf);
+              }}
               books={this.state.books}
             />}
         />
