@@ -41,6 +41,7 @@ class BookShelf extends Component {
                             />
                             <div className="book-shelf-changer">
                               <select
+                                value={book.shelf}
                                 onChange={event => {
                                   onUpdateShelf(book, event.target.value);
                                 }}
@@ -90,6 +91,7 @@ class BookShelf extends Component {
                           />
                           <div className="book-shelf-changer">
                             <select
+                              value={book.shelf}
                               onChange={event => {
                                 onUpdateShelf(book, event.target.value);
                               }}
@@ -139,6 +141,7 @@ class BookShelf extends Component {
                           />
                           <div className="book-shelf-changer">
                             <select
+                              value={book.shelf}
                               onChange={event => {
                                 onUpdateShelf(book, event.target.value);
                               }}
