@@ -20,19 +20,26 @@ class SearchBooks extends Component {
   }
 
   clearQuery = () => {
-    this.setState({ query: '', showingBooks: this.props.books });
+    this.setState({ query: '', showingBooks: [] });
   };
 
   updateQuery = async query => {
+    const userBooks = this.props.books;
     this.setState({ query: query.trim() });
     await BooksAPI.search(query, 20).then(books => {
       books.map(book => {
-        return this.setState(state => ({
-          showingBooks: state.showingBooks
-            .filter(b => b.id !== book.id)
-            .concat([book])
-        }));
+        let onShelf = userBooks.find(b => b.id === book.id);
+
+        if (onShelf) {
+          return (book.shelf = onShelf.shelf);
+        } else {
+          return book.shelf;
+        }
       });
+      // replace the showingBooks to render again the view with the last result books
+      this.setState(state => ({
+        showingBooks: books
+      }));
     });
   };
 
@@ -81,12 +88,12 @@ class SearchBooks extends Component {
                     />
                     <div className="book-shelf-changer">
                       <select
-                        value={book.shelf}
+                        value={book.shelf || 'empty'}
                         onChange={event => {
                           onUpdateShelf(book, event.target.value);
                         }}
                       >
-                        <option value="none" disabled>
+                        <option value="empty" disabled>
                           Move to...
                         </option>
                         <option value="currentlyReading">

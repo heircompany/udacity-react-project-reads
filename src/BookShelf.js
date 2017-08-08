@@ -41,12 +41,12 @@ class BookShelf extends Component {
                             />
                             <div className="book-shelf-changer">
                               <select
-                                value={book.shelf}
+                                value={book.shelf || 'empty'}
                                 onChange={event => {
                                   onUpdateShelf(book, event.target.value);
                                 }}
                               >
-                                <option value="none" disabled>
+                                <option value="empty" disabled>
                                   Move to...
                                 </option>
                                 <option value="currentlyReading">

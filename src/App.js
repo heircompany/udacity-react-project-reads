@@ -53,7 +53,6 @@ class App extends Component {
             <SearchBooks
               onUpdateShelf={(book, shelf) => {
                 this.updateShelf(book, shelf);
-                history.push('/');
               }}
               books={this.state.books}
             />}
